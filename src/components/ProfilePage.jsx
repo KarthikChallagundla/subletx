@@ -11,6 +11,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -29,6 +30,17 @@ export default function ProfilePage() {
     }
     fetchProfile();
   }, [user]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleEdit = (field) => {
     setEditField(field);

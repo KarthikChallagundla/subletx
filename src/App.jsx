@@ -30,6 +30,16 @@ function ListingsPage() {
   const [bookingSuccess, setBookingSuccess] = useState("");
   const [selectedListing, setSelectedListing] = useState(null);
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth <= 600);
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     async function fetchListingsAndSellers() {
@@ -96,41 +106,27 @@ function ListingsPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', width: '100vw', background: 'linear-gradient(120deg, #e3eafc 0%, #2563eb 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-      {/* Blurred blue accent shape */}
-      <div style={{
-        position: 'absolute',
-        top: '-100px',
-        right: '-120px',
-        width: 380,
-        height: 380,
-        background: 'radial-gradient(circle at 60% 40%, #2563eb 60%, #60a5fa 100%)',
-        filter: 'blur(90px)',
-        opacity: 0.18,
-        zIndex: 0,
-      }} />
-      <div style={{ maxWidth: 950, width: '100%', textAlign: 'center', padding: '2.5rem 2rem', borderRadius: 28, boxShadow: '0 8px 32px rgba(37,99,235,0.10)', background: 'rgba(255,255,255,0.97)', position: 'relative', zIndex: 1 }}>
-        <h2 style={{ color: '#2563eb', fontWeight: 900, fontSize: '2.2rem', marginBottom: 18, letterSpacing: '-1px' }}>Listings</h2>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)', padding: isMobile ? '1rem 0.2rem' : '0' }}>
+      <div style={{ maxWidth: isMobile ? 360 : 900, width: '100%', textAlign: 'center', padding: isMobile ? '1.2rem 0.5rem' : '2rem', borderRadius: isMobile ? 18 : 12, boxShadow: '0 2px 16px rgba(0,0,0,0.07)', background: '#fff' }}>
+        <h2 style={{ color: '#000', fontSize: isMobile ? '1.3rem' : '2rem', fontWeight: 900, marginBottom: 18 }}>Listings</h2>
         {user && (
           <button
-            style={{ marginTop: 16, marginBottom: 24, background: 'linear-gradient(90deg, #2563eb 60%, #60a5fa 100%)', color: '#fff', border: 'none', borderRadius: 999, padding: '0.85rem 2.2rem', fontSize: '1.13rem', fontWeight: 800, cursor: 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.08)', letterSpacing: '0.5px', transition: 'background 0.2s' }}
+            style={{ marginTop: 16, marginBottom: 24, background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: isMobile ? '0.7rem 0' : '0.75rem 2rem', fontSize: isMobile ? '1.05rem' : '1.1rem', cursor: 'pointer', width: isMobile ? '100%' : undefined }}
             onClick={() => navigate('/list')}
-            onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2563eb 40%, #60a5fa 100%)'}
-            onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2563eb 60%, #60a5fa 100%)'}
           >
             List New Subscription
           </button>
         )}
         {/* Filter Controls */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, justifyContent: 'center', marginBottom: 28, marginTop: 10 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: isMobile ? 10 : 16, justifyContent: 'center', marginBottom: 24 }}>
           <input
             type="text"
             placeholder="Search by keyword"
             value={keyword}
             onChange={e => setKeyword(e.target.value)}
-            style={{ padding: 12, fontSize: 16, width: 200, borderRadius: 10, border: '1.5px solid #c7d2fe', background: '#f8fafc', color: '#111', outline: 'none', transition: 'border 0.2s' }}
+            style={{ padding: isMobile ? 8 : 8, fontSize: isMobile ? 14 : 15, width: isMobile ? 120 : 180, borderRadius: 8, border: '1.5px solid #c7d2fe', background: '#f8fafc', color: '#111' }}
           />
-          <select value={category} onChange={e => setCategory(e.target.value)} style={{ padding: 12, fontSize: 16, borderRadius: 10, border: '1.5px solid #c7d2fe', background: '#f8fafc', color: '#111', outline: 'none', transition: 'border 0.2s' }}>
+          <select value={category} onChange={e => setCategory(e.target.value)} style={{ padding: isMobile ? 8 : 8, fontSize: isMobile ? 14 : 15, borderRadius: 8, border: '1.5px solid #c7d2fe', background: '#f8fafc', color: '#111' }}>
             <option value="">All Categories</option>
             <option value="Streaming">Streaming</option>
             <option value="Tools">Tools</option>
@@ -141,7 +137,7 @@ function ListingsPage() {
             placeholder="Min Price"
             value={minPrice}
             onChange={e => setMinPrice(e.target.value)}
-            style={{ padding: 12, fontSize: 16, width: 120, borderRadius: 10, border: '1.5px solid #c7d2fe', background: '#f8fafc', color: '#111', outline: 'none', transition: 'border 0.2s' }}
+            style={{ padding: isMobile ? 8 : 8, fontSize: isMobile ? 14 : 15, width: isMobile ? 70 : 110, borderRadius: 8, border: '1.5px solid #c7d2fe', background: '#f8fafc', color: '#111' }}
             min={0}
           />
           <input
@@ -149,43 +145,41 @@ function ListingsPage() {
             placeholder="Max Price"
             value={maxPrice}
             onChange={e => setMaxPrice(e.target.value)}
-            style={{ padding: 12, fontSize: 16, width: 120, borderRadius: 10, border: '1.5px solid #c7d2fe', background: '#f8fafc', color: '#111', outline: 'none', transition: 'border 0.2s' }}
+            style={{ padding: isMobile ? 8 : 8, fontSize: isMobile ? 14 : 15, width: isMobile ? 70 : 110, borderRadius: 8, border: '1.5px solid #c7d2fe', background: '#f8fafc', color: '#111' }}
             min={0}
           />
         </div>
         {loading ? (
           <div>Loading...</div>
         ) : listings.length === 0 ? (
-          <div style={{ color: '#64748b', fontWeight: 500, fontSize: 18, margin: '2rem 0' }}>No listings found.</div>
+          <div style={{ color: '#64748b', fontWeight: 500, fontSize: isMobile ? 15 : 18, margin: '2rem 0' }}>No listings found.</div>
         ) : filteredListings.length === 0 ? (
-          <div style={{ color: '#64748b', fontWeight: 500, fontSize: 18, margin: '2rem 0' }}>No listings match your filters.</div>
+          <div style={{ color: '#64748b', fontWeight: 500, fontSize: isMobile ? 15 : 18, margin: '2rem 0' }}>No listings match your filters.</div>
         ) : (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 28, justifyContent: 'center', marginTop: 18 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: isMobile ? 14 : 24, justifyContent: 'center', marginTop: 16 }}>
             {filteredListings.map(listing => (
-              <div key={listing.id} style={{ flex: '1 1 260px', maxWidth: 340, minWidth: 240, background: 'rgba(243,244,246,0.95)', borderRadius: 16, boxShadow: '0 2px 12px rgba(37,99,235,0.08)', padding: 22, textAlign: 'left', position: 'relative', transition: 'box-shadow 0.18s', border: '1.5px solid #c7d2fe' }}>
-                <h3 style={{ color: '#2563eb', marginBottom: 10, fontWeight: 800, fontSize: '1.18rem', letterSpacing: '-0.5px' }}>{listing.serviceName}</h3>
-                <div style={{ color: '#334155', marginBottom: 10, fontSize: 15 }}>{listing.description}</div>
-                <div style={{ fontWeight: 700, color: '#2563eb', marginBottom: 6, fontSize: 15 }}>₹{listing.price} / {listing.duration} day(s)</div>
-                <div style={{ fontSize: 13, color: '#64748b', marginBottom: 6 }}>Category: {listing.category}</div>
+              <div key={listing.id} style={{ flex: '1 1 220px', maxWidth: isMobile ? 260 : 320, minWidth: isMobile ? 140 : 220, background: '#f3f4f6', borderRadius: isMobile ? 12 : 10, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', padding: isMobile ? 10 : 18, textAlign: 'left', marginBottom: isMobile ? 10 : 0 }}>
+                <h3 style={{ color: '#000', marginBottom: 8, fontSize: isMobile ? '1.05rem' : '1.18rem', fontWeight: 700 }}>{listing.serviceName}</h3>
+                <div style={{ color: '#444', marginBottom: 8, fontSize: isMobile ? 13 : 15 }}>{listing.description}</div>
+                <div style={{ fontWeight: 500, color: '#2563eb', marginBottom: 4, fontSize: isMobile ? 13 : 15 }}>₹{listing.price} / {listing.duration} day(s)</div>
+                <div style={{ fontSize: isMobile ? 11 : 13, color: '#666', marginBottom: 4 }}>Category: {listing.category}</div>
                 {listing.tags && listing.tags.length > 0 && (
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>Tags: {listing.tags.join(', ')}</div>
+                  <div style={{ fontSize: isMobile ? 10 : 12, color: '#888', marginTop: 4 }}>Tags: {listing.tags.join(', ')}</div>
                 )}
-                <div style={{ fontSize: 13, color: '#334155', marginTop: 10 }}>
+                <div style={{ fontSize: isMobile ? 11 : 13, color: '#333', marginTop: 10 }}>
                   Seller: {sellers[listing.ownerId]?.email || 'Unknown'}
                 </div>
                 {sellers[listing.ownerId] && (
                   <a
                     href={`mailto:${sellers[listing.ownerId].email}`}
-                    style={{ display: 'inline-block', marginTop: 8, color: '#fff', background: 'linear-gradient(90deg, #2563eb 60%, #60a5fa 100%)', borderRadius: 8, padding: '7px 18px', textDecoration: 'none', fontSize: 14, fontWeight: 600, boxShadow: '0 1px 6px rgba(37,99,235,0.08)', transition: 'background 0.2s' }}
-                    onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2563eb 40%, #60a5fa 100%)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #2563eb 60%, #60a5fa 100%)'}
+                    style={{ display: 'inline-block', marginTop: 8, color: '#fff', background: '#2563eb', borderRadius: 6, padding: isMobile ? '5px 10px' : '6px 16px', textDecoration: 'none', fontSize: isMobile ? 12 : 14 }}
                   >
                     Contact Seller
                   </a>
                 )}
                 {user && (
                   <button
-                    style={{ marginTop: 14, background: 'linear-gradient(90deg, #10b981 60%, #34d399 100%)', color: '#fff', border: 'none', borderRadius: 999, padding: '0.7rem 1.7rem', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: '0 2px 8px rgba(16,185,129,0.08)', letterSpacing: '0.5px', transition: 'background 0.2s' }}
+                    style={{ marginTop: 12, background: '#10b981', color: '#fff', border: 'none', borderRadius: 8, padding: isMobile ? '0.4rem 0.8rem' : '0.5rem 1.2rem', fontSize: isMobile ? 13 : 15, cursor: 'pointer', width: isMobile ? '100%' : undefined }}
                     onClick={() => {
                       setSelectedListing({
                         ...listing,
@@ -194,8 +188,6 @@ function ListingsPage() {
                       });
                       setPaymentOpen(true);
                     }}
-                    onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #10b981 40%, #34d399 100%)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #10b981 60%, #34d399 100%)'}
                   >
                     Book Now
                   </button>

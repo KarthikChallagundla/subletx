@@ -8,6 +8,7 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     async function fetchOrders() {
@@ -22,6 +23,15 @@ export default function AdminDashboard() {
       setLoading(false);
     }
     fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleUpdate = async (orderId, status) => {

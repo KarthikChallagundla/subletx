@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { db } from '../firebaseConfig';
 import { doc, updateDoc, addDoc, collection, getDocs, serverTimestamp, Timestamp } from 'firebase/firestore';
 
@@ -10,6 +10,18 @@ export default function AccessInstructions({ order, isSeller, isAdmin, currentUs
   const [secret, setSecret] = useState(null);
   const [viewed, setViewed] = useState(false);
   const [shared, setShared] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 900);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Seller: Share a secret (credential)
   const handleShareSecret = async (e) => {
